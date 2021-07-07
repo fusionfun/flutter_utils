@@ -1,4 +1,4 @@
-group 'com.example.flutter_utils'
+group 'game.app.cradle.flutter_utils'
 version '1.0-SNAPSHOT'
 
 buildscript {

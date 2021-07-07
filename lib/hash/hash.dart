@@ -1,3 +1,5 @@
+library hash;
+
 /// Created by @RealCradle on 2021/7/7
 
 /// Generates a hash code for multiple [objects].

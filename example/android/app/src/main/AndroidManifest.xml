@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_utils_example">
+    package="game.app.cradle.flutter_utils_example">
    <application
         android:label="flutter_utils_example"
         android:icon="@mipmap/ic_launcher">
