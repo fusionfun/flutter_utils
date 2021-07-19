@@ -63,7 +63,6 @@ build_id.properties
 .pub-cache/
 .pub/
 /build/
-flutter_*
 .flutter-plugins-dependencies
 
 # goCli related
