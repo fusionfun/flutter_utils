@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Created by Haoyi on 4/28/21
+/// Created by @RealCradle on 4/28/21
 
 class ColorUtils {
   static Color toColor(String? colorStr, {Color defaultColor = Colors.white}) {

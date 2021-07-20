@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-/// Created by Haoyi on 4/9/21
+/// Created by @RealCradle on 4/9/21
 
 
 export 'package:rxdart/rxdart.dart';
