@@ -1,4 +1,5 @@
 import 'package:flutter_utils/number/number_utils.dart';
+import 'package:intl/intl.dart';
 
 /// Created by @RealCradle on 2020/5/20
 ///
@@ -7,17 +8,19 @@ import 'package:flutter_utils/number/number_utils.dart';
 enum TimeUnit { milliseconds, seconds, minutes, hour, day, month, year, infinite }
 
 class DateTimeUtils {
-  // static final yyyyMMddDateFormat = DateFormat("yyyyMMdd");
-  // static final yyMMddDateFormat = DateFormat("yyMMdd");
-  // static final yyyyMMNormalDateFormat = DateFormat("yyyy-MM");
-  // static final yyyyMMddNormalDateFormat = DateFormat("yyyy-MM-dd");
-  // static final standardDateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-  //
-  // static final yyyyMMDateFormat = DateFormat("yyyyMM");
-  // static final MMMDateFormat = DateFormat("MMM");
-  // static final monthAbbreviatedFormat = DateFormat("MMM");
-  //
-  // static final hamanDateFormat = DateFormat.yMd().add_jm();
+  static final yyyyMMddDateFormat = DateFormat("yyyyMMdd");
+  static final yyMMddDateFormat = DateFormat("yyMMdd");
+  static final yyyyMMNormalDateFormat = DateFormat("yyyy-MM");
+  static final yyyyMMddNormalDateFormat = DateFormat("yyyy-MM-dd");
+  static final standardDateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  static final yyyyMMDateFormat = DateFormat("yyyyMM");
+  static final MMMDateFormat = DateFormat("MMM");
+  static final monthAbbreviatedFormat = DateFormat("MMM");
+
+  static final hamanDateFormat = DateFormat.yMd().add_jm();
+
+  static final standardTimeFormat = DateFormat("HH:mm:ss");
 
   static const secondInMillis = 1000;
   static const minuteInMillis = secondInMillis * 60;
@@ -33,15 +36,17 @@ class DateTimeUtils {
   static const quarterOfHourInSecond = 900;
   static const halfHourInSecond = 1800;
 
-  // static String get yyyyMMdd => yyyyMMddDateFormat.format(DateTime.now());
-  //
-  // static String get yyMMdd => yyMMddDateFormat.format(DateTime.now());
-  //
-  // static String get yyyyMM => yyyyMMDateFormat.format(DateTime.now());
-  //
-  // static String get MMM => MMMDateFormat.format(DateTime.now());
-  //
-  // static String get humanDatetime => hamanDateFormat.format(DateTime.now());
+  static String get yyyyMMdd => yyyyMMddDateFormat.format(DateTime.now());
+
+  static String get yyMMdd => yyMMddDateFormat.format(DateTime.now());
+
+  static String get yyyyMM => yyyyMMDateFormat.format(DateTime.now());
+
+  static String get MMM => MMMDateFormat.format(DateTime.now());
+
+  static String get humanDatetime => hamanDateFormat.format(DateTime.now());
+
+  static String get humanTime => standardTimeFormat.format(DateTime.now());
 
   static String yyyyMMddBuild(DateTime dateTime) {
     // return yyyyMMddDateFormat.format(dateTime);
@@ -76,16 +81,11 @@ class DateTimeUtils {
   }
 
   static int currentTimeInSecond() {
-    return DateTime
-        .now()
-        .millisecondsSinceEpoch
-        .toDouble() ~/ Duration.millisecondsPerSecond;
+    return DateTime.now().millisecondsSinceEpoch.toDouble() ~/ Duration.millisecondsPerSecond;
   }
 
   static int currentTimeInMillis() {
-    return DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    return DateTime.now().millisecondsSinceEpoch;
   }
 
   static int toSecondSinceEpoch(DateTime dateTime) {
@@ -112,13 +112,10 @@ class DateTimeUtils {
 
   static String formatMilliseconds(int milliseconds) {
     String twoDigitHour = "";
-    String twoDigitMinutes = NumberUtils.twoDigits(
-        (milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour));
-    String twoDigitSeconds = NumberUtils.twoDigits(
-        (milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute));
+    String twoDigitMinutes = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour));
+    String twoDigitSeconds = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute));
     if (milliseconds > DateTimeUtils.hourInMillis) {
-      twoDigitHour = NumberUtils.twoDigits(
-          (milliseconds ~/ Duration.millisecondsPerHour).remainder(Duration.minutesPerHour));
+      twoDigitHour = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerHour).remainder(Duration.minutesPerHour));
       return "$twoDigitHour:$twoDigitMinutes:$twoDigitSeconds";
     }
     return "$twoDigitMinutes:$twoDigitSeconds";
@@ -128,8 +125,7 @@ class DateTimeUtils {
     return formatMilliseconds(seconds * 1000);
   }
 
-  static String formatDuration(Duration? duration,
-      {bool verbose = false, TimeUnit minUnit = TimeUnit.day}) {
+  static String formatDuration(Duration? duration, {bool verbose = false, TimeUnit minUnit = TimeUnit.day}) {
     if (duration == null) {
       return "--:--:--";
     }
@@ -146,10 +142,8 @@ class DateTimeUtils {
       return "${duration.inDays}d ${twoDigitHour}h";
     }
 
-    String twoDigitMinutes =
-    NumberUtils.twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
-    String twoDigitSeconds =
-    NumberUtils.twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+    String twoDigitMinutes = NumberUtils.twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+    String twoDigitSeconds = NumberUtils.twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
     if (verbose != true) {
       if (minUnit.index >= TimeUnit.hour.index && duration.inHours <= 0) {
         return "00:$twoDigitMinutes:$twoDigitSeconds";

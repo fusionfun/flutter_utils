@@ -1,3 +1,6 @@
+import 'dart:collection';
+
+import 'package:flutter_utils/datetime/datetime_utils.dart';
 import 'package:logger/logger.dart';
 
 /// Created by @RealCradle on 2021/7/7
@@ -8,11 +11,25 @@ enum LogMode { simple, pretty, none }
 class LogUtils {
   static Logger _logger = Logger(printer: PrettyPrinter(methodCount: 0));
 
+  static int recordCount = 0;
   static LogMode mode = LogMode.pretty;
+  static final DoubleLinkedQueue<MapEntry<String, String>> latestLogRecords = DoubleLinkedQueue();
 
   static void _simplePrint(String msg, {String? tag}) {
     print("[$tag] $msg");
   }
+
+  static void recordLog(String msg, {bool dump = true, StackTrace? stackTrace}) async {
+    recordCount++;
+    latestLogRecords.addFirst(MapEntry("[$recordCount] ${DateTimeUtils.humanTime}", msg));
+    if (latestLogRecords.length > 300) {
+      latestLogRecords.removeLast();
+    }
+    if (dump) {
+      print("$msg ${stackTrace ?? ""}");
+    }
+  }
+
 
   static void v(String msg, {String? tag}) {
     switch (mode) {
