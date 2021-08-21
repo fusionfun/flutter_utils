@@ -76,11 +76,16 @@ class DateTimeUtils {
   }
 
   static int currentTimeInSecond() {
-    return DateTime.now().millisecondsSinceEpoch.toDouble() ~/ Duration.millisecondsPerSecond;
+    return DateTime
+        .now()
+        .millisecondsSinceEpoch
+        .toDouble() ~/ Duration.millisecondsPerSecond;
   }
 
   static int currentTimeInMillis() {
-    return DateTime.now().millisecondsSinceEpoch;
+    return DateTime
+        .now()
+        .millisecondsSinceEpoch;
   }
 
   static int toSecondSinceEpoch(DateTime dateTime) {
@@ -119,6 +124,10 @@ class DateTimeUtils {
     return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
+  static String formatSeconds(int seconds) {
+    return formatMilliseconds(seconds * 1000);
+  }
+
   static String formatDuration(Duration? duration,
       {bool verbose = false, TimeUnit minUnit = TimeUnit.day}) {
     if (duration == null) {
@@ -138,9 +147,9 @@ class DateTimeUtils {
     }
 
     String twoDigitMinutes =
-        NumberUtils.twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+    NumberUtils.twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
     String twoDigitSeconds =
-        NumberUtils.twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+    NumberUtils.twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
     if (verbose != true) {
       if (minUnit.index >= TimeUnit.hour.index && duration.inHours <= 0) {
         return "00:$twoDigitMinutes:$twoDigitSeconds";

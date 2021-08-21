@@ -11,6 +11,8 @@ mixin BatchAware<T extends Identifiable> {
 
   Stream<Map<String, T>> get observableData => _subject.stream;
 
+  T? getData(String key) => _subject.value?[key];
+
   void processBatchData(BatchData<T> batchData) async {
     for (var action in batchData.getActions()) {
       switch (action.method) {
