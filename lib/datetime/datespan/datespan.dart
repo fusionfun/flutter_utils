@@ -18,6 +18,10 @@ class DateSpan {
       : start = Date(0),
         end = Date(0);
 
+  DateSpan.forever()
+      :start = Date(0),
+        end = Date((1 << 32) - 1);
+
   static DateSpan latest7Days() {
     final today = Date.today();
     return DateSpan(today.subtract(days: 7), today);

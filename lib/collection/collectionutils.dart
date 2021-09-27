@@ -60,9 +60,9 @@ class CollectionUtils {
 }
 
 class ListUtils {
-  static List<T> filterOutNulls<T>(List<T> data) {
+  static List<T> filterOutNulls<T>(List<T?> data) {
     final List<T> filtered = [];
-    data.forEach((T item) {
+    data.forEach((T? item) {
       if (item != null) {
         filtered.add(item);
       }

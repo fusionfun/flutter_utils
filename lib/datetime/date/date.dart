@@ -1,3 +1,7 @@
+import 'package:flutter_utils/hash/hash.dart';
+
+import '../datetime_utils.dart';
+
 /// Created by @RealCradle on 2021/8/5
 
 class Date {
@@ -9,13 +13,26 @@ class Date {
 
   int get weekday => _datetime.weekday;
 
+  String get yyyyMMdd => DateTimeUtils.yyyyMMddDateFormat.format(_datetime);
+
+  String get yyyyMM => "${_datetime.year}${DateTimeUtils.twoDigits(_datetime.month)}";
+
+  int get millisecondsSinceEpoch => _datetime.millisecondsSinceEpoch;
+
   final DateTime _datetime;
 
-  Date._(DateTime dateTime) : _datetime = dateTime;
+  Date._(DateTime dateTime) : _datetime = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  Date.fromDateTime(DateTime dateTime) : _datetime = DateTime(dateTime.year, dateTime.month, dateTime.day);
 
   Date(int year, [int month = 1, int day = 1]) : _datetime = DateTime(year, month, day);
 
-  Date.fromMillisecondsSinceEpoch(int millisecondsSinceEpoch) :_datetime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+  static Date fromMillisecondsSinceEpoch(int millisecondsSinceEpoch) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+    return Date._(dateTime);
+  }
+
+  DateTime toDateTime() => _datetime;
 
   static Date today() {
     return Date._(DateTime.now());
@@ -48,6 +65,12 @@ class Date {
     }
     return Date._(dt);
   }
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is Date && runtimeType == other.runtimeType && _datetime == other._datetime;
+
+  @override
+  int get hashCode => hash3(year, month, day);
 
   int differenceDays(Date date) {
     return _datetime

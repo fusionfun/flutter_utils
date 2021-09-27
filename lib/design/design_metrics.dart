@@ -12,7 +12,7 @@ class _DeviceMetrics {
   const _DeviceMetrics(this.wScale, this.hScale, this.size, this.direction);
 }
 
-enum _DesignMethod { width, height, average, widthScale, heightScale, combine, origin }
+enum _DesignMethod { width, height, average, widthScale, heightScale, combine, origin, statusBarHeight, navigationBarHeight }
 
 class DesignMetrics {
   final Size designSize;
@@ -107,13 +107,9 @@ class DesignMetrics {
     return fromLTRB(left, top, left + width, top + height);
   }
 
-  DesignRect fromCenter(
-      DesignField centerX, DesignField centerY, DesignField width, DesignField height) {
-    return fromLTRB(
-        centerX - DesignField._relativeRatio(width, 0.5),
-        centerY - DesignField._relativeRatio(height, 0.5),
-        centerX + DesignField._relativeRatio(width, 0.5),
-        centerY + DesignField._relativeRatio(height, 0.5));
+  DesignRect fromCenter(DesignField centerX, DesignField centerY, DesignField width, DesignField height) {
+    return fromLTRB(centerX - DesignField._relativeRatio(width, 0.5), centerY - DesignField._relativeRatio(height, 0.5),
+        centerX + DesignField._relativeRatio(width, 0.5), centerY + DesignField._relativeRatio(height, 0.5));
   }
 
   DesignOffset offset(DesignField dx, DesignField dy) {
@@ -131,8 +127,7 @@ class DesignMetrics {
   }
 
   void measure(Size size) {
-    final sizeScale =
-        _DeviceMetrics(size.width / designSize.width, size.height / designSize.height, size, null);
+    final sizeScale = _DeviceMetrics(size.width / designSize.width, size.height / designSize.height, size, null);
     objects.forEach((field) {
       field.measure(sizeScale);
     });

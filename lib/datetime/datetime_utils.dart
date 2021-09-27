@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_utils/number/number_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +7,33 @@ import 'package:intl/intl.dart';
 ///
 
 enum TimeUnit { milliseconds, seconds, minutes, hour, day, month, year, infinite }
+
+/// Signature for a function that creates a widget for a given `day`.
+typedef DayBuilder = Widget? Function(BuildContext context, DateTime day);
+
+/// Signature for a function that creates a widget for a given `day`.
+/// Additionally, contains the currently focused day.
+typedef FocusedDayBuilder = Widget? Function(BuildContext context, DateTime day, DateTime focusedDay);
+
+/// Signature for a function returning text that can be localized and formatted with `DateFormat`.
+typedef TextFormatter = String Function(DateTime date, dynamic locale);
+
+/// Gestures available for the calendar.
+enum AvailableGestures { none, verticalSwipe, horizontalSwipe, all }
+
+/// Formats that the calendar can display.
+enum CalendarFormat { month, twoWeeks, week }
+
+/// Days of the week that the calendar can start with.
+enum StartingDayOfWeek {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+}
 
 class DateTimeUtils {
   static final yyyyMMddDateFormat = DateFormat("yyyyMMdd");
@@ -172,6 +200,75 @@ class DateTimeUtils {
     final year = dateTime.year;
     final month = dateTime.month;
     return DateTime(year, month + 1, 0).day;
+  }
+
+  /// Returns a numerical value associated with given `weekday`.
+  ///
+  /// Returns 1 for `StartingDayOfWeek.monday`, all the way to 7 for `StartingDayOfWeek.sunday`.
+  static int getWeekdayNumber(StartingDayOfWeek weekday) {
+    return StartingDayOfWeek.values.indexOf(weekday) + 1;
+  }
+
+  /// Returns `date` in UTC format, without its time part.
+  static DateTime normalizeDate(DateTime date) {
+    return DateTime.utc(date.year, date.month, date.day);
+  }
+
+  /// Checks if two DateTime objects are the same day.
+  /// Returns `false` if either of them is null.
+  static bool isSameDay(DateTime? a, DateTime? b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  static bool isSameMonth(DateTime? a, DateTime? b) {
+    if (a == null || b == null) {
+      return false;
+    }
+    return a.year == b.year && a.month == b.month;
+  }
+
+  static int getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
+  }
+
+  static int getRowCount(DateTime focusedDay) {
+    final first = _firstDayOfMonth(focusedDay);
+    final daysBefore = getDaysBefore(first);
+    final firstToDisplay = first.subtract(Duration(days: daysBefore));
+
+    final last = lastDayOfMonth(focusedDay);
+    final daysAfter = getDaysAfter(last);
+    final lastToDisplay = last.add(Duration(days: daysAfter));
+
+    return (lastToDisplay.difference(firstToDisplay).inDays + 1) ~/ 7;
+  }
+
+  static DateTime _firstDayOfMonth(DateTime month) {
+    return DateTime.utc(month.year, month.month, 1);
+  }
+
+  static int getDaysBefore(DateTime firstDay) {
+    return (firstDay.weekday + 7 - getWeekdayNumber(StartingDayOfWeek.sunday)) % 7;
+  }
+
+  static DateTime lastDayOfMonth(DateTime month) {
+    final date = month.month < 12 ? DateTime.utc(month.year, month.month + 1, 1) : DateTime.utc(month.year + 1, 1, 1);
+    return date.subtract(const Duration(days: 1));
+  }
+
+  static int getDaysAfter(DateTime lastDay) {
+    int invertedStartingWeekday = 8 - getWeekdayNumber(StartingDayOfWeek.sunday);
+
+    int daysAfter = 7 - ((lastDay.weekday + invertedStartingWeekday) % 7);
+    if (daysAfter == 7) {
+      daysAfter = 0;
+    }
+
+    return daysAfter;
   }
 }
 

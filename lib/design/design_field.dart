@@ -58,6 +58,8 @@ class DesignField extends DesignObject<double> {
       case _DesignMethod.combine:
         final combinedValue = value as CombinedValue;
         return combinedValue.combine(metrics);
+      case _DesignMethod.statusBarHeight:
+        return 0;
       case _DesignMethod.average:
       default:
         return ((value * metrics.hScale) + (value * metrics.wScale)) / 2;
@@ -99,6 +101,14 @@ class DesignField extends DesignObject<double> {
   DesignField._relativeRatio(DesignField relative, double ratio)
       : this.designValue = RatioCombinedValue(relative, ratio),
         designMethod = _DesignMethod.combine;
+
+  DesignField.statusBarHeight()
+      : this.designValue = -1,
+        designMethod = _DesignMethod.statusBarHeight;
+
+  DesignField.navigationBarHeight()
+      : this.designValue = -1,
+        designMethod = _DesignMethod.navigationBarHeight;
 
   DesignField._combine(this.designValue) : this.designMethod = _DesignMethod.combine;
 
