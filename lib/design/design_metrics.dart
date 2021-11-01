@@ -79,6 +79,11 @@ class DesignMetrics {
     return field;
   }
 
+  DesignField design(DesignField field) {
+    _add(field);
+    return field;
+  }
+
   DesignField widthScale(double scale) {
     final field = DesignField._widthScale(scale);
     _add(field);

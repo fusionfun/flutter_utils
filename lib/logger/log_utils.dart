@@ -19,7 +19,7 @@ class LogUtils {
     print("[$tag] $msg");
   }
 
-  static void recordLog(String msg, {bool dump = true, StackTrace? stackTrace}) async {
+  static void recordLog(String msg, {bool dump = true, StackTrace? stackTrace, bool? syncFirebase}) async {
     recordCount++;
     latestLogRecords.addFirst(MapEntry("[$recordCount] ${DateTimeUtils.humanTime}", msg));
     if (latestLogRecords.length > 300) {

@@ -67,7 +67,8 @@ class FileUtils {
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         } else {
-          Directory(unzipPath + "/" + file.name)..create(recursive: true);
+          Directory(unzipPath + "/" + file.name)
+            ..create(recursive: true);
         }
       }
       print("unzip success");
@@ -78,9 +79,9 @@ class FileUtils {
     }
   }
 
-  static Future<bool> unzipTo(Uint8List data, String unzipPath) async {
+  static Future<bool> unzipTo(Uint8List data, String unzipPath, {String? password}) async {
     try {
-      Archive archive = ZipDecoder().decodeBytes(data);
+      Archive archive = ZipDecoder().decodeBytes(data, password: password);
       for (ArchiveFile file in archive) {
         if (file.isFile) {
           List<int> data = file.content;
@@ -88,7 +89,8 @@ class FileUtils {
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         } else {
-          Directory(unzipPath + "/" + file.name)..create(recursive: true);
+          Directory(unzipPath + "/" + file.name)
+            ..create(recursive: true);
         }
       }
       print("unzip success");
