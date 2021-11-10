@@ -29,4 +29,15 @@ class PseudoRandom {
   bool nextBool() {
     return _rand() & 0x01 == 1;
   }
+
+  void shuffle(List list) {
+    var i = list.length;
+    while (i > 1) {
+      int pos = nextInt(i);
+      i -= 1;
+      var tmp = list[i];
+      list[i] = list[pos];
+      list[pos] = tmp;
+    }
+  }
 }
