@@ -1,4 +1,4 @@
-/// Created by Haoyi on 2021/9/14
+/// Created by RealCradle on 2021/9/14
 
 class PseudoRandom {
   static const _RAND_MAX = 0x7FFFFFFF;
@@ -6,7 +6,11 @@ class PseudoRandom {
 
   int _next = 1;
 
-  PseudoRandom([int? seed]) : _next = seed ?? _RAND_INIT;
+  final int seed;
+
+  PseudoRandom([int? seed])
+      : seed = seed ?? _RAND_INIT,
+        _next = seed ?? _RAND_INIT;
 
   int _rand() {
     if (_next == 0) {
