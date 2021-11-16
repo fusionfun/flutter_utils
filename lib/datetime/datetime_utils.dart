@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_utils/number/number_utils.dart';
+import 'package:flutter_utils/quiver/time.dart';
 import 'package:intl/intl.dart';
 
 /// Created by @RealCradle on 2020/5/20
@@ -189,6 +192,23 @@ class DateTimeUtils {
         return "${duration.inHours} hr $twoDigitMinutes min $twoDigitSeconds sec";
       }
     }
+  }
+
+  static List<int> getYearList(int start, [int? end]) {
+    final now = DateTime.now();
+    final endYear = (end == null || end < start) ? now.year : end;
+    final startYear = min(start, endYear);
+
+    return List.generate(endYear - startYear + 1, (year) => year + start);
+  }
+
+  static List<DateTime> generateDaysInMonth(int year, int month) {
+    final count = daysInMonth(year, month);
+    final List<DateTime> result = [];
+    for (int day = 1; day <= count; ++day) {
+      result.add(DateTime(year, month, day));
+    }
+    return result;
   }
 
   static String twoDigits(int n) {

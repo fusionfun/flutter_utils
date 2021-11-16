@@ -13,6 +13,8 @@ mixin BatchAware<T extends Identifiable> {
 
   T? getData(String key) => _subject.value?[key];
 
+  List<T> get allData => _subject.value?.values.toList() ?? [];
+
   void processBatchData(BatchData<T> batchData) async {
     for (var action in batchData.getActions()) {
       switch (action.method) {
