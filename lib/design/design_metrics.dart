@@ -15,7 +15,7 @@ class _DeviceMetrics {
 enum _DesignMethod { width, height, average, widthScale, heightScale, combine, origin, statusBarHeight, navigationBarHeight }
 
 class DesignMetrics {
-  final Size designSize;
+  final Size designResolution;
   final List<DesignObject> objects = [];
 
   static Map<num, DesignField> originFields = {
@@ -31,7 +31,7 @@ class DesignMetrics {
     9: DesignField._origin(9),
   };
 
-  DesignMetrics.create(this.designSize);
+  DesignMetrics.create(this.designResolution);
 
   DesignField origin(num value) {
     final result = originFields[value];
@@ -102,18 +102,56 @@ class DesignMetrics {
     return field;
   }
 
-  DesignRect fromLTRB(DesignField left, DesignField top, DesignField right, DesignField bottom) {
-    final rect = DesignRect.fromLTRB(left, top, right, bottom);
+  DesignSize designSize(double width, double height) {
+    final size = _DesignExplicitSize(width, height);
+    _add(size);
+    return size;
+  }
+
+  DesignSize designFieldSize(DesignField width, DesignField height) {
+    final size = _DesignFieldSize(width, height);
+    _add(size);
+    return size;
+  }
+
+  DesignSize widthRatioSize({required double width, required double ratio}) {
+    final size = _DesignWidthRatioSize(width, ratio);
+    _add(size);
+    return size;
+  }
+
+  DesignSize heightRatioSize({required double height, required double ratio}) {
+    final size = _DesignHeightRatioSize(height, ratio);
+    _add(size);
+    return size;
+  }
+
+  DesignRect fromLTRB(double left, double top, double right, double bottom) {
+    final rect = _DesignExplicitRect.fromLTRB(left, top, right, bottom);
     _add(rect);
     return rect;
   }
 
-  DesignRect fromLTWH(DesignField left, DesignField top, DesignField width, DesignField height) {
+  DesignRect fromLTWH(double left, double top, double width, double height) {
     return fromLTRB(left, top, left + width, top + height);
   }
 
-  DesignRect fromCenter(DesignField centerX, DesignField centerY, DesignField width, DesignField height) {
-    return fromLTRB(centerX - DesignField._relativeRatio(width, 0.5), centerY - DesignField._relativeRatio(height, 0.5),
+  DesignRect fromCenter(Offset center, double width, double height) {
+    return fromLTRB(center.dx - width * 0.5, center.dy - height * 0.5, center.dx + width * 0.5, center.dy + height * 0.5);
+  }
+
+  DesignRect fromFieldLTRB(DesignField left, DesignField top, DesignField right, DesignField bottom) {
+    final rect = _DesignFieldRect.fromLTRB(left, top, right, bottom);
+    _add(rect);
+    return rect;
+  }
+
+  DesignRect fromFieldLTWH(DesignField left, DesignField top, DesignField width, DesignField height) {
+    return fromFieldLTRB(left, top, left + width, top + height);
+  }
+
+  DesignRect fromFieldCenter(DesignField centerX, DesignField centerY, DesignField width, DesignField height) {
+    return fromFieldLTRB(centerX - DesignField._relativeRatio(width, 0.5), centerY - DesignField._relativeRatio(height, 0.5),
         centerX + DesignField._relativeRatio(width, 0.5), centerY + DesignField._relativeRatio(height, 0.5));
   }
 
@@ -132,7 +170,7 @@ class DesignMetrics {
   }
 
   void measure(Size size) {
-    final sizeScale = _DeviceMetrics(size.width / designSize.width, size.height / designSize.height, size, null);
+    final sizeScale = _DeviceMetrics(size.width / designResolution.width, size.height / designResolution.height, size, null);
     objects.forEach((field) {
       field.measure(sizeScale);
     });

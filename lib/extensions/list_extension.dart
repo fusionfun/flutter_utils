@@ -2,7 +2,7 @@
 
 part of "extensions.dart";
 
-extension ListExtension<T> on List<T> {
+extension ListExtension<T> on Iterable<T> {
   T? get safeLast => isEmpty ? null : last;
 
   T? get safeFirst => isEmpty ? null : first;
