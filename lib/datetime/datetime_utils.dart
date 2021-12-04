@@ -152,6 +152,33 @@ class DateTimeUtils {
     return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
+  static String formatDurationShort(int milliseconds) {
+    String hour = NumberUtils.twoDigits((milliseconds ~/ Duration.microsecondsPerHour).remainder(Duration.minutesPerHour));
+    String minute = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour));
+    String second = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute));
+    if (hour.startsWith('0')) {
+      hour = hour.substring(1);
+    }
+    if (minute.startsWith('0')) {
+      minute = minute.substring(1);
+    }
+    if (second.startsWith('0')) {
+      second = second.substring(1);
+    }
+    String threeDigitMilliseconds = NumberUtils.threeDigits(milliseconds ~/ 10);
+    if (milliseconds < DateTimeUtils.secondInMillis * 10) {
+      return "$second.$threeDigitMilliseconds s";
+    } else if (milliseconds < DateTimeUtils.minuteInMillis) {
+      return "$second s";
+    } else if (milliseconds < DateTimeUtils.hourInMillis) {
+      return "$minute m $second s";
+    } else if (milliseconds > DateTimeUtils.hourInMillis) {
+      hour = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerHour).remainder(Duration.minutesPerHour));
+      return "$hour:$minute:$second";
+    }
+    return "$minute:$second";
+  }
+
   static String formatSeconds(int seconds) {
     return formatMilliseconds(seconds * 1000);
   }
