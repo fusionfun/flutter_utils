@@ -77,4 +77,9 @@ class Date {
         .difference(date._datetime)
         .inDays;
   }
+
+  @override
+  String toString() {
+    return DateTimeUtils.yyyyMMddBuild(_datetime);
+  }
 }

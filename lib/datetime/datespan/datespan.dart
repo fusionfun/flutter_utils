@@ -12,6 +12,7 @@ class DateSpan {
 
   DateSpan(this.start, this.end);
 
+
   int get differenceDays => end.differenceDays(start);
 
   DateSpan.empty()
@@ -35,6 +36,12 @@ class DateSpan {
   static DateSpan latest30Days() {
     final today = Date.today();
     return DateSpan(today.subtract(days: 30), today);
+  }
+
+
+  @override
+  String toString() {
+    return '$start - $end}';
   }
 }
 
