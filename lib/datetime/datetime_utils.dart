@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_utils/number/number_utils.dart';
+import 'package:flutter_utils/extensions/extensions.dart';
 import 'package:flutter_utils/quiver/time.dart';
 import 'package:intl/intl.dart';
 
@@ -43,7 +44,7 @@ class DateTimeUtils {
   static final yyMMddDateFormat = DateFormat("yyMMdd");
   static final yyyyMMNormalDateFormat = DateFormat("yyyy-MM");
   static final yyyyMMddNormalDateFormat = DateFormat("yyyy-MM-dd");
-  static final MMddNormalDateFormat =  DateFormat("MM.dd");
+  static final MMddNormalDateFormat = DateFormat("MM.dd");
   static final standardDateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   static final yyyyMMDateFormat = DateFormat("yyyyMM");
@@ -147,37 +148,25 @@ class DateTimeUtils {
     String twoDigitMinutes = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour));
     String twoDigitSeconds = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute));
     if (milliseconds > DateTimeUtils.hourInMillis) {
-      twoDigitHour = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerHour).remainder(Duration.minutesPerHour));
+      twoDigitHour = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerHour));
       return "$twoDigitHour:$twoDigitMinutes:$twoDigitSeconds";
     }
     return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   static String formatDurationShort(int milliseconds) {
-    String hour = NumberUtils.twoDigits((milliseconds ~/ Duration.microsecondsPerHour).remainder(Duration.minutesPerHour));
-    String minute = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour));
-    String second = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute));
-    if (hour.startsWith('0')) {
-      hour = hour.substring(1);
+    final int hour = (milliseconds ~/ Duration.microsecondsPerHour);
+    int minute = (milliseconds ~/ Duration.millisecondsPerMinute).remainder(Duration.minutesPerHour);
+    int second = (milliseconds ~/ Duration.millisecondsPerSecond).remainder(Duration.secondsPerMinute);
+    int millis = milliseconds.remainder(Duration.millisecondsPerSecond);
+
+    if (hour > 0) {
+      return "${hour.format(2)}:${minute.format(2)}:${second.format(2)}.${millis.format(3)}";
+    } else if (minute > 0) {
+      return "${minute.format(2)} m ${second.format(2)}.${millis.format(3)} s";
+    } else {
+      return "${second.format(2)}.${millis.format(3)} s";
     }
-    if (minute.startsWith('0')) {
-      minute = minute.substring(1);
-    }
-    if (second.startsWith('0')) {
-      second = second.substring(1);
-    }
-    String threeDigitMilliseconds = NumberUtils.threeDigits(milliseconds ~/ 10);
-    if (milliseconds < DateTimeUtils.secondInMillis * 10) {
-      return "$second.$threeDigitMilliseconds s";
-    } else if (milliseconds < DateTimeUtils.minuteInMillis) {
-      return "$second s";
-    } else if (milliseconds < DateTimeUtils.hourInMillis) {
-      return "$minute m $second s";
-    } else if (milliseconds > DateTimeUtils.hourInMillis) {
-      hour = NumberUtils.twoDigits((milliseconds ~/ Duration.millisecondsPerHour).remainder(Duration.minutesPerHour));
-      return "$hour:$minute:$second";
-    }
-    return "$minute:$second";
   }
 
   static String formatSeconds(int seconds) {
