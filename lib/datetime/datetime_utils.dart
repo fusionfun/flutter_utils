@@ -43,6 +43,7 @@ class DateTimeUtils {
   static final yyMMddDateFormat = DateFormat("yyMMdd");
   static final yyyyMMNormalDateFormat = DateFormat("yyyy-MM");
   static final yyyyMMddNormalDateFormat = DateFormat("yyyy-MM-dd");
+  static final MMddNormalDateFormat =  DateFormat("MM.dd");
   static final standardDateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   static final yyyyMMDateFormat = DateFormat("yyyyMM");
