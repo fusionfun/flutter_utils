@@ -90,13 +90,15 @@ class BatchData<T> {
   }
 
   void _appendAll(BatchMethod method, List<T> data, {BatchResult result = BatchResultSuccess}) {
-    final batchAction = actions.isNotEmpty ? actions.last : null;
-    if (batchAction != null &&
-        batchAction.method == method &&
-        batchAction.result.state == result.state) {
-      batchAction.appendAll(data);
-    } else {
-      actions.add(BatchAction<T>(method, data: data, result: result));
+    if (data.isNotEmpty) {
+      final batchAction = actions.isNotEmpty ? actions.last : null;
+      if (batchAction != null &&
+          batchAction.method == method &&
+          batchAction.result.state == result.state) {
+        batchAction.appendAll(data);
+      } else {
+        actions.add(BatchAction<T>(method, data: data, result: result));
+      }
     }
   }
 
@@ -116,8 +118,7 @@ class BatchData<T> {
     _appendAll(BatchMethod.update, data, result: result);
   }
 
-  void replace(
-      {bool Function(T)? where, T Function(T)? updater, BatchResult result = BatchResultSuccess}) {
+  void replace({bool Function(T)? where, T Function(T)? updater, BatchResult result = BatchResultSuccess}) {
     actions.add(BatchAction(BatchMethod.replace,
         data: [],
         result: BatchResultSuccess,
@@ -165,13 +166,17 @@ class BatchData<T> {
 
   bool get isNotEmpty => actions.isNotEmpty;
 
-  int get length => isEmpty
-      ? 0
-      : actions.map((action) => action.length).reduce((value, element) => element + value);
+  int get length =>
+      isEmpty
+          ? 0
+          : actions.map((action) => action.length).reduce((value, element) => element + value);
 
-  bool get hasError => isEmpty
-      ? false
-      : actions.where((action) => action.result.state == BatchState.error).length > 0;
+  bool get hasError =>
+      isEmpty
+          ? false
+          : actions
+          .where((action) => action.result.state == BatchState.error)
+          .length > 0;
 
   bool get hasInsertSuccess => containsMethodResult(BatchMethod.insert, [BatchState.success]);
 
@@ -185,23 +190,39 @@ class BatchData<T> {
 
   bool get hasDeleteError => containsMethodResult(BatchMethod.delete, [BatchState.error]);
 
-  int size(List<BatchMethod> methods, {BatchResult? result}) => isEmpty
-      ? 0
-      : actions
-      .where((action) {
-    final exists = methods.contains(action.method);
-    return (exists && result != null) ? action.result.state == result.state : exists;
-  })
-      .map((action) => action.length)
-      .reduce((value, element) => element + value);
+  int size(List<BatchMethod> methods, {BatchResult? result}) =>
+      isEmpty
+          ? 0
+          : actions
+          .where((action) {
+        final exists = methods.contains(action.method);
+        return (exists && result != null) ? action.result.state == result.state : exists;
+      })
+          .map((action) => action.length)
+          .reduce((value, element) => element + value);
 
   List<BatchAction<T>> getActions({List<BatchMethod> methods = ALL_METHODS, BatchResult? result}) =>
       isEmpty
       ? []
-      : actions.where((action) {
+
+      :
+
+  actions.where
+
+  (
+
+  (
+
+  action
+
+  ) {
   final exists = methods.contains(action.method);
   return (exists && result != null) ? action.result.state == result.state : exists;
-  }).toList();
+  })
+
+      .
+
+  toList();
 
   T? first({List<BatchMethod> methods = ALL_METHODS, BatchResult? result}) {
     for (var action in actions) {
@@ -215,15 +236,59 @@ class BatchData<T> {
     return null;
   }
 
-  List<T> data({List<BatchMethod> methods = ALL_METHODS, BatchResult? result}) => isEmpty
-  ? []
-      : actions
-      .where((action) {
+  List<T> data({List<BatchMethod> methods = ALL_METHODS, BatchResult? result}) =>
+      isEmpty
+      ? []
+
+      :
+
+  actions
+      .where
+
+  (
+
+  (
+
+  action
+
+  ) {
   final exists = methods.contains(action.method);
   return (exists && result != null) ? action.result.state == result.state : exists;
   })
-      .map((action) => action.collection)
-      .reduce((data, collection) {
+
+      .
+
+  map
+
+  (
+
+  (
+
+  action
+
+  )
+
+  =>
+
+  action.collection
+
+  )
+
+      .
+
+  reduce
+
+  (
+
+  (
+
+  data
+
+  ,
+
+  collection
+
+  ) {
   final List<T> result = [];
   if (data.isNotEmpty == true) {
   result.addAll(data);

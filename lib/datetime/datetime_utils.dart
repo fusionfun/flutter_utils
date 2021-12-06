@@ -39,6 +39,12 @@ enum StartingDayOfWeek {
   sunday,
 }
 
+final daysFormat = RegExp(r"#d{([^#]*)}");
+final hoursFormat = RegExp(r"#h{([^#]*)}");
+final minutesFormat = RegExp(r"#m{([^#]*)}");
+final secondsFormat = RegExp(r"#s{([^#]*)}");
+final millisecondsFormat = RegExp(r"#ms{([^#]*)}");
+
 class DateTimeUtils {
   static final yyyyMMddDateFormat = DateFormat("yyyyMMdd");
   static final yyMMddDateFormat = DateFormat("yyMMdd");
@@ -209,6 +215,127 @@ class DateTimeUtils {
         return "${duration.inHours} hr $twoDigitMinutes min $twoDigitSeconds sec";
       }
     }
+  }
+
+  // {dd} : inDays
+  // {hh} : inHours
+  // {mm} : inMinutes
+  // {ss} : inSeconds
+  // {ms} : inMillis remainder per seconds
+  static String formatDurationV2(Duration? duration, {String format = "", bool eliminateRedundancy = true}) {
+    if (duration == null) {
+      return "--:--:--";
+    }
+
+    int days = duration.inDays > 0 ? duration.inDays : 0;
+    int hours = duration.inHours.remainder(Duration.hoursPerDay);
+    int minutes = duration.inMinutes.remainder(Duration.minutesPerHour);
+    int seconds = duration.inSeconds.remainder(Duration.secondsPerMinute);
+    int millis = duration.inMilliseconds.remainder(Duration.millisecondsPerSecond);
+
+    bool canIgnore = eliminateRedundancy;
+    String result = format;
+    final daysMatches = daysFormat.allMatches(result);
+    if (daysMatches.length > 0) {
+      for (var match in daysMatches) {
+        final pattern = match.group(0);
+        if (pattern != null) {
+          final group = match.groupCount > 0 ? match.group(1) : "";
+          if (days > 0) {
+            result = result.replaceAll(pattern, "$days$group");
+            canIgnore = false;
+          } else if (canIgnore) {
+            result = result.replaceAll(pattern, "");
+          } else {
+            result = result.replaceAll(pattern, "00$group");
+          }
+        }
+      }
+    } else {
+      hours += days * Duration.hoursPerDay;
+    }
+
+    final hoursMatches = hoursFormat.allMatches(result);
+    if (hoursMatches.length > 0) {
+      for (var match in hoursMatches) {
+        final pattern = match.group(0);
+        if (pattern != null) {
+          final group = match.groupCount > 0 ? match.group(1) : "";
+          if (hours > 0) {
+            result = result.replaceAll(pattern, "${hours.format(2)}$group");
+            canIgnore = false;
+          } else if (canIgnore) {
+            result = result.replaceAll(pattern, "");
+          } else {
+            result = result.replaceAll(pattern, "00$group");
+          }
+        }
+      }
+    } else {
+      minutes += hours * Duration.minutesPerHour;
+    }
+
+    final minutesMatches = minutesFormat.allMatches(result);
+    if (minutesMatches.length > 0) {
+      for (var match in minutesMatches) {
+        final pattern = match.group(0);
+        if (pattern != null) {
+          final group = match.groupCount > 0 ? match.group(1) : "";
+          if (minutes > 0) {
+            result = result.replaceAll(pattern, "${minutes.format(2)}$group");
+            canIgnore = false;
+          } else if (canIgnore) {
+            result = result.replaceAll(pattern, "");
+          } else {
+            result = result.replaceAll(pattern, "00$group");
+          }
+        }
+      }
+    } else {
+      seconds += minutes * Duration.secondsPerMinute;
+    }
+
+    final secondsMatches = secondsFormat.allMatches(result);
+    if (secondsMatches.length > 0) {
+      for (var match in secondsMatches) {
+        final pattern = match.group(0);
+        if (pattern != null) {
+          final group = match.groupCount > 0 ? match.group(1) : "";
+          if (seconds > 0) {
+            result = result.replaceAll(pattern, "${seconds.format(2)}$group");
+            canIgnore = false;
+          } else if (canIgnore) {
+            result = result.replaceAll(pattern, "");
+          } else {
+            result = result.replaceAll(pattern, "00$group");
+          }
+        }
+      }
+    } else {
+      millis += minutes * Duration.secondsPerMinute;
+    }
+
+    final millisecondsMatches = millisecondsFormat.allMatches(result);
+    if (millisecondsMatches.length > 0) {
+      for (var match in millisecondsMatches) {
+        final pattern = match.group(0);
+        if (pattern != null) {
+          final group = match.groupCount > 0 ? match.group(1) : "";
+          if (millis > 0) {
+            result = result.replaceAll(pattern, "${millis.format(3)}$group");
+            canIgnore = false;
+          } else if (canIgnore) {
+            result = result.replaceAll(pattern, "");
+          } else {
+            result = result.replaceAll(pattern, "00$group");
+          }
+        }
+      }
+    } else {
+      millis += minutes * Duration.secondsPerMinute;
+    }
+
+    return result;
   }
 
   static List<int> getYearList(int start, [int? end]) {
