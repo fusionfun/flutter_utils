@@ -1,6 +1,6 @@
 part of 'design.dart';
 
-/// Created by Haoyi on 2021/11/23
+/// Created by @RealCradle on 2021/11/23
 
 abstract class DesignSize extends DesignObject<Size> {
   Size get size;

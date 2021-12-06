@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_utils/hash/hash.dart';
 
 
-/// Created by Haoyi on 4/13/21
+/// Created by @RealCradle on 4/13/21
 
 class IntArray {
   int head = 0;

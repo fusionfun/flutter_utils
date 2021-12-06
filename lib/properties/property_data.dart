@@ -4,7 +4,7 @@ import 'package:flutter_utils/extensions/extensions.dart';
 import 'package:flutter_utils/properties/property_bundle.dart';
 import 'package:flutter_utils/properties/property_delegate.dart';
 
-/// Created by Haoyi on 2021/9/2
+/// Created by @RealCradle on 2021/9/2
 
 abstract class PropertyData<T> {
   static final Map<String, PropertyData> properties = {};
