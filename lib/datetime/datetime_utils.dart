@@ -223,8 +223,8 @@ class DateTimeUtils {
   // {ss} : inSeconds
   // {ms} : inMillis remainder per seconds
   static String formatDurationV2(Duration? duration, {String format = "", bool eliminateRedundancy = true}) {
-    if (duration == null) {
-      return "--:--:--";
+    if (duration == null || duration.inMilliseconds < 1000) {
+      return "---";
     }
 
     int days = duration.inDays > 0 ? duration.inDays : 0;
