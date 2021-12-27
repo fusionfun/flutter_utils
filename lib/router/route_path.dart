@@ -4,42 +4,31 @@
 part of "./router.dart";
 
 class RoutePath {
-  final String mainPath;
-  final String? segmentSpecifier;
+  final String name;
+  final bool segmentSpecifier;
+  final RoutePath? parentPath;
 
-  const RoutePath(this.mainPath, {this.segmentSpecifier});
+  const RoutePath(this.name, {this.segmentSpecifier = false, this.parentPath});
 
-  String get definedPath {
-    String path = mainPath;
-    if (segmentSpecifier?.isNotEmpty == true) {
-      path += "/:$segmentSpecifier";
-    }
-    return path;
+  String get _path {
+    return "${parentPath?.path ?? ""}$mainPath";
   }
 
-  String pathUri({String? segmentPath, Map<String, String>? queryParams}) {
+  String get mainPath {
+    return "/${segmentSpecifier ? ":" : ""}$name";
+  }
+
+  String path({String? segmentPath, Map<String, String>? queryParams}) {
     final requestQueryParams = queryParams?.entries.map((e) => "${e.key}=${e.value}").toList() ?? <String>[];
-    String path = definedPath;
-    if (segmentSpecifier?.isNotEmpty == true) {
-      if (segmentPath?.isNotEmpty == true) {
-        path = path.replaceAll(":$segmentSpecifier", segmentPath!);
-      } else {
-        assert(false, "The route($path) need to provide segment path parameters!!");
-      }
-    }
-    requestQueryParams.add(RouteUtils._routeIdQueryParams);
-    return "$path?${requestQueryParams.join("&")}";
-  }
+    String path = _path;
 
-  String path({String? segmentPath}) {
-    String path = definedPath;
-    if (segmentSpecifier?.isNotEmpty == true) {
-      if (segmentPath?.isNotEmpty == true) {
-        path = path.replaceAll(":$segmentSpecifier", segmentPath!);
+    if (segmentSpecifier) {
+      if (segmentPath != null) {
+        path = path.replaceAll(":$segmentSpecifier", segmentPath);
       } else {
         assert(false, "The route($path) need to provide segment path parameters!!");
       }
     }
-    return path;
+    return "$path${queryParams?.isNotEmpty == true ? "?${requestQueryParams.join("&")}" : ''}";
   }
 }
